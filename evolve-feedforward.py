@@ -26,6 +26,15 @@ runs_per_net = 2
 from keras import backend as K
 import tensorflow.compat.v1 as tf
 
+NUM_PARALLEL_EXEC_UNITS = 8
+config = tf.ConfigProto(intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS, inter_op_parallelism_threads=2,
+                       allow_soft_placement=True, device_count={'CPU': NUM_PARALLEL_EXEC_UNITS})
+session = tf.Session(config=config)
+K.set_session(session)
+os.environ["OMP_NUM_THREADS"] = "8"
+os.environ["KMP_BLOCKTIME"] = "30"
+os.environ["KMP_SETTINGS"] = "1"
+os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
 
 # Use the NN network phenotype and the discrete actuator force function.
 def eval_genome(genome, config):
@@ -61,20 +70,21 @@ def run():
     #tensorflow
     #tf.compat.v1.disable_eager_execution()
     tf.disable_v2_behavior()
-    NUM_PARALLEL_EXEC_UNITS = 8
+    '''NUM_PARALLEL_EXEC_UNITS = 2
     config = tf.ConfigProto(intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS, inter_op_parallelism_threads=2,
                            allow_soft_placement=True, device_count={'CPU': NUM_PARALLEL_EXEC_UNITS})
     session = tf.Session(config=config)
     K.set_session(session)
-    os.environ["OMP_NUM_THREADS"] = "8"
+    os.environ["OMP_NUM_THREADS"] = "2"
     os.environ["KMP_BLOCKTIME"] = "30"
     os.environ["KMP_SETTINGS"] = "1"
-    os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
+    os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"'''
     # Load the config file, which is assumed to live in
     # the same directory as this script.
-    
+
     #timer
     start = timer()
+    #print(start);
     
     
     
